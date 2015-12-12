@@ -70,6 +70,10 @@ public class EnemyStateMachine : MonoBehaviour {
             m_direction.x = 0;
         }
 
+        //Change Animation
+        //m_anim.sendSpeedX();
+        //m_anim.sendSpeedY();
+
         if (debug)
         {
             for (int i = 0; i < 4; i++)
@@ -302,12 +306,12 @@ public class EnemyStateMachine : MonoBehaviour {
     //Attacking
     private void handleAttackingEntered()
     {
-        throw new System.NotImplementedException();
+        //Play attacking animation
     }
 
     private void handleAttacking()
     {
-        throw new System.NotImplementedException();
+        //Destroy Scene and go to Game Over
     }
 
     private void handleAttackingExit()
