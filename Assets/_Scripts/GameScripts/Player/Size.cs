@@ -8,11 +8,18 @@ public class Size : MonoBehaviour {
 	[SerializeField]
 	private int MAX_SIZE = 8;
 
+	public Transform playerMovement;
+
 	// Functions
 	void Start() {
 	}
 
 	void Update() {
+	}
+
+	public void grow() {
+		++size;
+		sendMessage("wardOffCamera", playerMovement, null);
 	}
 
 }

@@ -6,8 +6,7 @@ using UnityEngine;
 using System.Collections;
 using AssemblyCSharp;
 
-public class Pickable : Interactable, I_Pickable
-{
+public abstract class Pickable : Interactable, I_Pickable {
 	public Transform itemHolderObject;	
 	private I_InventoryItem item;
 
@@ -18,55 +17,38 @@ public class Pickable : Interactable, I_Pickable
 	private bool pickable = false;
 
 	// Use this for initialization
-	void Awake ()
-	{
+	void Awake () {
 		this.myCollider = GetComponent<Collider2D>();
 		item = itemHolderObject.GetComponent<I_InventoryItem>();
 		hint = hintHolderObject.GetComponent<I_InteractableHint>();
 	}
 	
 	// Update is called once per frame
-	void Update ()
-	{
+	void Update () {
 	
 	}
 
-
-	public override void onInteract (GameObject generator)
-	{
+	public override void onInteract (GameObject generator) {
 		onPickUp(generator);
 	}
 
     
-	public void onInteractableEnter ()
-	{
+	public void onInteractableEnter () {
 		hint.onShowHint();
 		pickable = true;
 	}
 
-	public void onInteractableExit ()
-	{
+	public void onInteractableExit () {
 		hint.onHideHint();
 		pickable = false;
 	}
 
-	public bool isInteractable ()
-	{
+	public bool isInteractable () {
 		return interactable;
 	}
 
-	public void onPickUp(GameObject generator) {
-		Inventory i = generator.GetComponent<Inventory>();
-		if (i != null) {
-			i.AddItem(item);
-		}
-		GameObject.Destroy(gameObject);
-	}
+	public abstract void onPickUp(GameObject generator);
 
 	//Abstract methods to be implemented by each particular class
-	public bool canBePicked() {
-		return pickable;
-	}
-	
+	public abstract bool canBePicked();
 }
-
