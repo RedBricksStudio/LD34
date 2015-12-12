@@ -31,7 +31,7 @@ namespace AssemblyCSharp
 				new Vector2(rb.velocity.x, newY);
 			
 			rb.velocity = newVelocity;
-		}
+		}        
 
 		public static void AddVerticalForce(this Rigidbody2D rb, float force) {
 			rb.AddForce(new Vector3(0, force, 0));
