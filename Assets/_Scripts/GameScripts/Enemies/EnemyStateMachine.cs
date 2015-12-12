@@ -27,12 +27,13 @@ public class EnemyStateMachine : MonoBehaviour {
     //Private Components
     Transform m_tr;
     Rigidbody m_rb;
-    
+    NavMeshAgent m_nva;
 
 	// Use this forinitialization
 	void Start () {
         m_tr = GetComponent<Transform>();
         m_rb = GetComponent<Rigidbody>();
+        m_nva = GetComponent<NavMeshAgent>();
 
         ChangeState(EnemyStates.Patrol);
 	}
@@ -149,18 +150,18 @@ public class EnemyStateMachine : MonoBehaviour {
             Debug.Log("handlePatrolEntered()");
 
         m_currWaypoint = 0;
+        m_nva.destination = waypoints[m_currWaypoint].position;
     }
 
     private void handlePatrol()
     {
         if (debug)
-            Debug.Log("handlePatrol()");
-
-        changeVelocityAndChildren((waypoints[m_currWaypoint].position - m_tr.position) * m_speed);
+            Debug.Log("handlePatrol()");        
 
         if (waypointReached())
         {
             m_currWaypoint = (m_currWaypoint + 1) % waypoints.GetLength(0);
+            m_nva.destination = waypoints[m_currWaypoint].position;
         }
     }
 
@@ -185,7 +186,7 @@ public class EnemyStateMachine : MonoBehaviour {
 
     private void handleChasing()
     {
-        changeVelocityAndChildren((m_playerToChase.position - m_tr.position) * m_speed);
+        
     }
 
     private void handleChasingExit()
@@ -237,16 +238,5 @@ public class EnemyStateMachine : MonoBehaviour {
             ChangeState(EnemyStates.Chasing);
         }
     }
-
-    private void changeVelocityAndChildren(Vector3 newSpeed)
-    {
-        m_rb.velocity = newSpeed;        
-
-        foreach (Rigidbody rbchild in GetComponentsInChildren<Rigidbody>())
-        {
-            rbchild.velocity = m_rb.velocity;
-        }
-    }
-
 
 }
