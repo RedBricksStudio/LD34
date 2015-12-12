@@ -8,9 +8,9 @@ public class PlayerMovement : MonoBehaviour, I_InputReceiver {
     public Transform inputSender;
 
     [SerializeField]
-    private float m_speedDelta;
+    private float m_speedDelta = 10;
     [SerializeField]
-    private float speedLoss;
+    private float speedLoss = 1;
 
     private Rigidbody m_rb;
     private Transform m_tr;
@@ -31,60 +31,56 @@ public class PlayerMovement : MonoBehaviour, I_InputReceiver {
         m_tr.up = m_rb.velocity;
 	}
 
-    public void onAttachedToSender()
-    {
+    public void onAttachedToSender() {
         if (debug)
             Debug.Log("Attached to sender");
     }
 
-    public void onDetachFromSender()
-    {
+    public void onDetachFromSender() {
         if (debug)
             Debug.Log("Detached from sender");
     }
 
-    public void onButtonPressed(E_InputTypes type)
-    {
-        switch (type)
-        {
+    public void onButtonPressed(E_InputTypes type) {
+        switch (type) {
             case E_InputTypes.Up:
-                m_velocity.y += m_speedDelta;
+                m_velocity.y = m_speedDelta;
                 break;
             case E_InputTypes.Down:
-                m_velocity.y -= m_speedDelta;
+                m_velocity.y = -m_speedDelta;
                 break;
             case E_InputTypes.Left:
-                m_velocity.x -= m_speedDelta;
+                m_velocity.x = -m_speedDelta;
                 break;
             case E_InputTypes.Right:
-                m_velocity.x += m_speedDelta;
+                m_velocity.x = m_speedDelta;
                 break;
         }
     }
 
     public void onButtonReleased(E_InputTypes type) {
-        switch (type)
-        {
+        switch (type) {
             case E_InputTypes.Up:
-                m_velocity.y -= m_speedDelta;
+                m_velocity.y = 0;
                 break;
             case E_InputTypes.Down:
-                m_velocity.y -= m_speedDelta;
+                m_velocity.y = 0;
                 break;
             case E_InputTypes.Left:
-                m_velocity.x += m_speedDelta;
+                m_velocity.x = 0;
                 break;
             case E_InputTypes.Right:
-                m_velocity.x -= m_speedDelta;
+                m_velocity.x = 0;
                 break;
         }
     }
 
     public void slowDown() {
         m_speedDelta -= speedLoss;
+        print("New Player top speed is: " + m_speedDelta);
     }
 
     public void wardOffCamera() {
-        this.transform.parent.position += Vector3.up;
+        GameObject.Find("Camera").SendMessage("wardOff");
     }
 }

@@ -4,26 +4,23 @@ using UnityEngine;
 public class Size : MonoBehaviour {
 	// Attributes
 	[SerializeField]
-	private int size = 0;
+	private int size = 1;
 	[SerializeField]
 	private int MAX_SIZE = 8;
-
-	public Transform playerMovement;
+	
+	private GameObject player;
 
 	// Functions
 	void Start() {
-	}
-
-	void Update() {
+		player = GameObject.Find("Player");
 	}
 
 	public void grow() {
-		++size;
+		if(size < MAX_SIZE)
+			++size;
 
-
-		playerMovement.gameObject.SendMessage("slowDown");
-		playerMovement.gameObject.SendMessage("wardOffCamera");
-        		
+		player.SendMessage("slowDown");
+		player.SendMessage("wardOffCamera");
 	}
 
 }
