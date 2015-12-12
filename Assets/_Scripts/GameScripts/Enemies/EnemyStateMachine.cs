@@ -26,13 +26,13 @@ public class EnemyStateMachine : MonoBehaviour {
 
     //Private Components
     Transform m_tr;
-    Rigidbody2D m_rb;
+    Rigidbody m_rb;
     
 
 	// Use this forinitialization
 	void Start () {
         m_tr = GetComponent<Transform>();
-        m_rb = GetComponent<Rigidbody2D>();
+        m_rb = GetComponent<Rigidbody>();
 
         ChangeState(EnemyStates.Patrol);
 	}
@@ -242,7 +242,7 @@ public class EnemyStateMachine : MonoBehaviour {
     {
         m_rb.velocity = newSpeed;        
 
-        foreach (Rigidbody2D rbchild in GetComponentsInChildren<Rigidbody2D>())
+        foreach (Rigidbody rbchild in GetComponentsInChildren<Rigidbody>())
         {
             rbchild.velocity = m_rb.velocity;
         }
