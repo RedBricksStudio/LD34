@@ -4,12 +4,12 @@ using UnityEngine;
 public class Size : MonoBehaviour {
 	// Attributes
 	[SerializeField]
-	private int size;
-	
+	private int size = 0;
+	[SerializeField]
+	private int MAX_SIZE = 8;
 
 	// Functions
 	void Start() {
-		size = 0;
 	}
 
 	void Update() {
