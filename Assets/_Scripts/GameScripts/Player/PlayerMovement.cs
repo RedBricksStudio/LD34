@@ -61,17 +61,29 @@ public class PlayerMovement : MonoBehaviour, I_InputReceiver {
     public void onButtonReleased(E_InputTypes type) {
         switch (type) {
             case E_InputTypes.Up:
-                m_velocity.y = 0;
-                break;
+                if(Input.GetButton("Down"))
+                    m_velocity.y = -m_speedDelta;
+                else
+                    m_velocity.y = 0;
+            break;
             case E_InputTypes.Down:
-                m_velocity.y = 0;
-                break;
+                if(Input.GetButton("Up"))
+                    m_velocity.y = m_speedDelta;
+                else
+                    m_velocity.y = 0;
+            break;
             case E_InputTypes.Left:
-                m_velocity.x = 0;
-                break;
+                if(Input.GetButton("Right"))
+                    m_velocity.x = m_speedDelta;
+                else
+                    m_velocity.x = 0;
+            break;
             case E_InputTypes.Right:
-                m_velocity.x = 0;
-                break;
+                if(Input.GetButton("Left"))
+                    m_velocity.x = -m_speedDelta;
+                else
+                    m_velocity.x = 0;
+            break;
         }
     }
 
