@@ -1,0 +1,11 @@
+INVENTORY BASE system setup:
+
+1.- Assign the Inventory.cs script to the desired player. 
+2.- Create a script to display the invetory, and attach it to an object.
+3.- Put the attached object (the display) into the Inventory component of the player.
+
+ITEM CREATION:
+
+1.- Make a Unity Script (MonoDevelop) that implements I_InventoryItem.
+2.- Attach a I_InventoryItemEffect to the inventory item object.
+3.- Done!
