@@ -20,7 +20,7 @@ public class EnemyStateMachine : MonoBehaviour {
     [SerializeField]
     private float m_speed;
     [SerializeField]
-    private float m_waypointMargin;
+    private float m_range;
 
     private Transform m_playerToChase;
 
@@ -79,7 +79,7 @@ public class EnemyStateMachine : MonoBehaviour {
     private void onState(EnemyStates m_state)
     {
         if (debug)
-            Debug.Log("Handling state" + m_state);
+            //Debug.Log("Handling state" + m_state);
 
         switch (m_state)
         {
@@ -155,19 +155,17 @@ public class EnemyStateMachine : MonoBehaviour {
 
     private void handlePatrol()
     {
+        /*
         if (debug)
-            Debug.Log("handlePatrol()");        
-
-        if (waypointReached())
-        {
-            m_currWaypoint = (m_currWaypoint + 1) % waypoints.GetLength(0);
-            m_nva.destination = waypoints[m_currWaypoint].position;
-        }
+            Debug.Log("handlePatrol()");  
+         */
+        
     }
 
     private bool waypointReached()
     {
-        return (m_tr.position - waypoints[m_currWaypoint].position).sqrMagnitude <= m_waypointMargin;
+        return (Mathf.Abs(m_tr.position.x - waypoints[m_currWaypoint].position.x) <= m_range
+            || Mathf.Abs(m_tr.position.z - waypoints[m_currWaypoint].position.z) <= m_range);
     }
 
     private void handlePatrolExit()
@@ -181,12 +179,21 @@ public class EnemyStateMachine : MonoBehaviour {
     {
         if (debug)
             Debug.Log("handleChasingEntered()" + m_playerToChase.name);
-                
+
+        m_nva.destination = m_playerToChase.position;
     }
 
     private void handleChasing()
     {
-        
+        if (playerReached())
+        {
+            ChangeState(EnemyStates.Attacking);
+        }
+    }
+
+    private bool playerReached()
+    {
+        return (m_tr.position - m_playerToChase.position).sqrMagnitude <= m_range;
     }
 
     private void handleChasingExit()
@@ -236,6 +243,21 @@ public class EnemyStateMachine : MonoBehaviour {
         {
             m_playerToChase = player;
             ChangeState(EnemyStates.Chasing);
+        }
+    }
+
+    void OnTriggerEnter(Collider col)
+    {
+        Debug.Log("Collision" + col.name + col.tag);
+
+        if (col.tag.Equals("waypoint") && m_state.Equals(EnemyStates.Patrol) &&
+            col.transform.position == waypoints[m_currWaypoint].position)
+        {
+
+            Debug.Log("Waypoint reached");
+
+            m_currWaypoint = (m_currWaypoint + 1) % waypoints.GetLength(0);
+            m_nva.destination = waypoints[m_currWaypoint].position;
         }
     }
 
