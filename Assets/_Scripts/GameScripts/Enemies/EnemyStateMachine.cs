@@ -21,6 +21,10 @@ public class EnemyStateMachine : MonoBehaviour {
     private float m_speed;
     [SerializeField]
     private float m_range;
+    [SerializeField]
+    private float m_sight;
+
+    private Vector3 m_direction;
 
     private Transform m_playerToChase;
 
@@ -40,6 +44,32 @@ public class EnemyStateMachine : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+       
+        if (Mathf.Abs(m_nva.velocity.x) - Mathf.Abs(m_nva.velocity.z) > 0)
+        {
+            if (m_nva.velocity.x > 0)
+            {
+                m_direction.x = 1;
+            }
+            else
+            {
+                m_direction.x = -1;
+            }
+            m_direction.z = 0;
+        }
+        else
+        {
+            if (m_nva.velocity.z > 0)
+            {
+                m_direction.z = 1;
+            }
+            else
+            {
+                m_direction.z = -1;
+            }
+            m_direction.x = 0;
+        }
+                
         onState(m_state);
 	}    
 
@@ -155,18 +185,41 @@ public class EnemyStateMachine : MonoBehaviour {
 
     private void handlePatrol()
     {
-        /*
-        if (debug)
-            Debug.Log("handlePatrol()");  
-         */
         
+        if (debug)
+        //    Debug.Log("handlePatrol()");
+
+        if (playerDetected())
+        {
+            ChangeState(EnemyStates.Chasing);
+        }
+
     }
 
-    private bool waypointReached()
+    private bool playerDetected()
     {
-        return (Mathf.Abs(m_tr.position.x - waypoints[m_currWaypoint].position.x) <= m_range
-            || Mathf.Abs(m_tr.position.z - waypoints[m_currWaypoint].position.z) <= m_range);
-    }
+        RaycastHit hit;
+        bool detected = false;
+
+        Vector3 direction = new Vector3((m_rb.velocity.x / m_rb.velocity.x), 0, (m_rb.velocity.z / m_rb.velocity.z));
+
+        if (Physics.Raycast(m_tr.position, m_direction, out hit, Mathf.Infinity))
+        {
+            Debug.Log(hit.collider.name);
+
+            if (hit.collider.tag.Equals("Player"))
+            {
+                detected = true;
+
+                m_playerToChase = hit.collider.transform;
+
+                if (debug)
+                    Debug.Log("Player Detected");
+            }
+        }
+
+        return detected;
+    }   
 
     private void handlePatrolExit()
     {
@@ -197,8 +250,9 @@ public class EnemyStateMachine : MonoBehaviour {
     }
 
     private void handleChasingExit()
-    {
-        throw new System.NotImplementedException();
+    {        
+        m_nva.velocity = Vector3.zero;
+        m_nva.Stop();
     }
 
     //LookAround
@@ -247,15 +301,11 @@ public class EnemyStateMachine : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider col)
-    {
-        Debug.Log("Collision" + col.name + col.tag);
+    {       
 
         if (col.tag.Equals("waypoint") && m_state.Equals(EnemyStates.Patrol) &&
             col.transform.position == waypoints[m_currWaypoint].position)
         {
-
-            Debug.Log("Waypoint reached");
-
             m_currWaypoint = (m_currWaypoint + 1) % waypoints.GetLength(0);
             m_nva.destination = waypoints[m_currWaypoint].position;
         }
