@@ -69,6 +69,14 @@ public class EnemyStateMachine : MonoBehaviour {
             }
             m_direction.x = 0;
         }
+
+        if (debug)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                Debug.DrawRay(m_tr.position, rotateVector(m_direction, (30 - (i * 20))) * m_sight, Color.Lerp(Color.green, Color.cyan, i * 4));
+            }
+        }
                 
         onState(m_state);
 	}    
@@ -201,24 +209,44 @@ public class EnemyStateMachine : MonoBehaviour {
         RaycastHit hit;
         bool detected = false;
 
-        Vector3 direction = new Vector3((m_rb.velocity.x / m_rb.velocity.x), 0, (m_rb.velocity.z / m_rb.velocity.z));
-
-        if (Physics.Raycast(m_tr.position, m_direction, out hit, Mathf.Infinity))
+        //Detect player 
+        int i = 0;
+        while (i < 4 && !detected)
         {
-            Debug.Log(hit.collider.name);
-
-            if (hit.collider.tag.Equals("Player"))
+            if (Physics.Raycast(m_tr.position, rotateVector(m_direction, 30 - (i * 20)), out hit, m_sight))
             {
-                detected = true;
+                Debug.Log(hit.collider.name);
 
-                m_playerToChase = hit.collider.transform;
+                if (hit.collider.tag.Equals("Player"))
+                {
+                    detected = true;
 
-                if (debug)
-                    Debug.Log("Player Detected");
+                    m_playerToChase = hit.collider.transform;
+
+                    if (debug)
+                        Debug.Log("Player Detected");
+                }
+
             }
+            i++;
         }
-
         return detected;
+    }
+
+    private Vector3 rotateVector(Vector3 m_direction, int p)
+    {
+
+        Vector3 right;
+        if (m_direction.x != 0)
+        {
+            right = Vector3.Cross(m_direction, m_tr.TransformDirection(Vector3.forward));
+        }
+        else
+        {
+            right = Vector3.Cross(m_direction, m_tr.TransformDirection(Vector3.right));
+        }        
+        
+        return Quaternion.AngleAxis(p, right) * m_direction;
     }   
 
     private void handlePatrolExit()
