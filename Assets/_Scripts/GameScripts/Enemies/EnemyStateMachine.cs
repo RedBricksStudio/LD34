@@ -7,7 +7,7 @@ public class EnemyStateMachine : MonoBehaviour {
     
     public enum EnemyStates
     {
-        Idle, Patrol, Preparing, Attacking, LookAround
+        Idle, Patrol, Chasing, Attacking, LookAround
     }
 
     private EnemyStates m_state = EnemyStates.Idle;
@@ -16,19 +16,29 @@ public class EnemyStateMachine : MonoBehaviour {
     private int m_currWaypoint = 0;
     public Transform[] waypoints;
 
+    //Attributes
+    [SerializeField]
+    private float m_speed;
+    [SerializeField]
+    private float m_waypointMargin;
+
+    private Transform m_playerToChase;
 
     //Private Components
     Transform m_tr;
     Rigidbody2D m_rb;
+    
 
 	// Use this forinitialization
 	void Start () {
         m_tr = GetComponent<Transform>();
         m_rb = GetComponent<Rigidbody2D>();
+
+        ChangeState(EnemyStates.Patrol);
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
         onState(m_state);
 	}    
 
@@ -44,15 +54,16 @@ public class EnemyStateMachine : MonoBehaviour {
         if (debug)
             Debug.Log("Entering state" + m_state);
 
-        switch (m_state) {
+        switch (m_state) 
+        {
             case EnemyStates.Idle:
                 handleIdleEntered();
                 break;
             case EnemyStates.Patrol:
                 handlePatrolEntered();
                 break;
-            case EnemyStates.Preparing:
-                handlePreparingEntered();
+            case EnemyStates.Chasing:
+                handleChasingEntered();
                 break;
             case EnemyStates.LookAround:
                 handleLookAroundEntered();
@@ -77,8 +88,8 @@ public class EnemyStateMachine : MonoBehaviour {
             case EnemyStates.Patrol:
                 handlePatrol();
                 break;
-            case EnemyStates.Preparing:
-                handlePreparing();
+            case EnemyStates.Chasing:
+                handleChasing();
                 break;
             case EnemyStates.LookAround:
                 handleLookAround();
@@ -102,8 +113,8 @@ public class EnemyStateMachine : MonoBehaviour {
             case EnemyStates.Patrol:
                 handlePatrolExit();
                 break;
-            case EnemyStates.Preparing:
-                handlePreparingExit();
+            case EnemyStates.Chasing:
+                handleChasingExit();
                 break;
             case EnemyStates.LookAround:
                 handleLookAroundExit();
@@ -134,31 +145,50 @@ public class EnemyStateMachine : MonoBehaviour {
     //Patrol
     private void handlePatrolEntered()
     {
+        if (debug)
+            Debug.Log("handlePatrolEntered()");
+
         m_currWaypoint = 0;
     }
 
     private void handlePatrol()
     {
-        
+        if (debug)
+            Debug.Log("handlePatrol()");
+
+        changeVelocityAndChildren((waypoints[m_currWaypoint].position - m_tr.position) * m_speed);
+
+        if (waypointReached())
+        {
+            m_currWaypoint = (m_currWaypoint + 1) % waypoints.GetLength(0);
+        }
+    }
+
+    private bool waypointReached()
+    {
+        return (m_tr.position - waypoints[m_currWaypoint].position).sqrMagnitude <= m_waypointMargin;
     }
 
     private void handlePatrolExit()
     {
-        throw new System.NotImplementedException();
+        if (debug)
+            Debug.Log("handlePatrolExit()");
     }
 
     //Preparing
-    private void handlePreparingEntered()
+    private void handleChasingEntered()
     {
-        throw new System.NotImplementedException();
+        if (debug)
+            Debug.Log("handleChasingEntered()" + m_playerToChase.name);
+                
     }
 
-    private void handlePreparing()
+    private void handleChasing()
     {
-        throw new System.NotImplementedException();
+        changeVelocityAndChildren((m_playerToChase.position - m_tr.position) * m_speed);
     }
 
-    private void handlePreparingExit()
+    private void handleChasingExit()
     {
         throw new System.NotImplementedException();
     }
@@ -195,6 +225,28 @@ public class EnemyStateMachine : MonoBehaviour {
         throw new System.NotImplementedException();
     }
 
+
+    //OTHER METHODS
+    public void onPlayerSeen(Transform player)
+    {
+        if (m_state.Equals(EnemyStates.LookAround) ||
+            m_state.Equals(EnemyStates.Patrol) ||
+            m_state.Equals(EnemyStates.Idle))
+        {
+            m_playerToChase = player;
+            ChangeState(EnemyStates.Chasing);
+        }
+    }
+
+    private void changeVelocityAndChildren(Vector3 newSpeed)
+    {
+        m_rb.velocity = newSpeed;        
+
+        foreach (Rigidbody2D rbchild in GetComponentsInChildren<Rigidbody2D>())
+        {
+            rbchild.velocity = m_rb.velocity;
+        }
+    }
 
 
 }

@@ -68,7 +68,7 @@ public class PlayerMovement : MonoBehaviour, I_InputReceiver {
                 m_velocity.y -= m_speedDelta;
                 break;
             case E_InputTypes.Down:
-                m_velocity.y += m_speedDelta;
+                m_velocity.y -= m_speedDelta;
                 break;
             case E_InputTypes.Left:
                 m_velocity.x += m_speedDelta;

@@ -20,8 +20,10 @@ public class Size : MonoBehaviour {
 	public void grow() {
 		++size;
 
+
 		playerMovement.gameObject.SendMessage("slowDown");
 		playerMovement.gameObject.SendMessage("wardOffCamera");
+        		
 	}
 
 }
