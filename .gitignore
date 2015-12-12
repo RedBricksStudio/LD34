@@ -1,0 +1,10 @@
+*.ini
+*.meta
+
+# Vim backup files
+*.swp
+
+# Unity Stuff
+Library/
+Temp/
+ProjectSettings/
