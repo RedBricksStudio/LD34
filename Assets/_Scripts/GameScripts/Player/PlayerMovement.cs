@@ -9,16 +9,18 @@ public class PlayerMovement : MonoBehaviour, I_InputReceiver {
 
     [SerializeField]
     private float m_speedDelta;
+    [SerializeField]
+    private float speedLoss;
 
-    private Rigidbody2D m_rb;
+    private Rigidbody m_rb;
     private Transform m_tr;
 
-    private Vector2 m_velocity = new Vector2(0, 0);
+    private Vector3 m_velocity = new Vector3(0, 0, 0);
 
 	// Use this for initialization
 	void Start () {
         inputSender.GetComponent<I_InputSender>().addInputReceiver(this);
-        m_rb = GetComponent<Rigidbody2D>();
+        m_rb = GetComponent<Rigidbody>();
         m_tr = GetComponent<Transform>();
 	}
 	
@@ -60,8 +62,7 @@ public class PlayerMovement : MonoBehaviour, I_InputReceiver {
         }
     }
 
-    public void onButtonReleased(E_InputTypes type)
-    {
+    public void onButtonReleased(E_InputTypes type) {
         switch (type)
         {
             case E_InputTypes.Up:
@@ -77,5 +78,13 @@ public class PlayerMovement : MonoBehaviour, I_InputReceiver {
                 m_velocity.x -= m_speedDelta;
                 break;
         }
+    }
+
+    public void slowDown() {
+        m_speedDelta -= speedLoss;
+    }
+
+    public void wardOffCamera() {
+        this.transform.parent.position += Vector3.up;
     }
 }
