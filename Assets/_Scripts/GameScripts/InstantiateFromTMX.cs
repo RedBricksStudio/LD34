@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 public class InstantiateFromTMX : MonoBehaviour {
 
@@ -14,16 +16,18 @@ public class InstantiateFromTMX : MonoBehaviour {
     public int rows;
     public int columns;
 
-    public GameObject waypoint1;
-
 	// Use this for initialization
 	void Awake () {
         string[,] tiles = CSVReader.SplitCsvGrid(mapa.text);
         CSVReader.DebugOutputGrid(tiles);
 
         int offset = 1;
+        GameObject wp= null;
 
-        ArrayList enemies = new ArrayList();
+        Dictionary<string, Transform> wps = new Dictionary<string, Transform>();
+
+        Dictionary<string, Vector2> enemies = new Dictionary<string, Vector2>();
+        Regex identifyWypoint = new Regex("[0-9][0-9]");
         
         for(int k=0;k < rows;k++) {
             for (int l = 0; l < columns; l++)
@@ -32,29 +36,39 @@ public class InstantiateFromTMX : MonoBehaviour {
                 if (val.Equals("WW"))
                 {
                     //Debug.Log("Instantiating wall at " + new Vector2(k, l));
-                    GameObject newWall = (GameObject)Instantiate(wall, new Vector3(k * offset, 2, l * offset), Quaternion.identity);
-                    //newWall.AddComponent<NavMeshObstacle>();
-                    //newWall.GetComponent<NavMeshObstacle>().carving = true;
+                    GameObject newWall = (GameObject)Instantiate(wall, new Vector3(k * offset, 2, l * offset), Quaternion.identity);                    
                 } else if (val.Equals("PP")) {
                     GameObject.Instantiate(player, new Vector3(k * offset, 2, l * offset), Quaternion.identity);
                 } else if (val.Contains("E")) {
-                    enemies.Add(new Vector2(k, l));                    
+                    enemies.Add(val, new Vector2(k, l)); 
                 } else if (val.Equals("CC")) {
                     GameObject.Instantiate(pickup, new Vector3(k * offset, 2, l * offset), Quaternion.identity);
                 }
-                else if (val.Equals("90"))
+                else if (Regex.IsMatch(val, "[0-9][0-9]"))
                 {
-                    GameObject.Instantiate(waypoint, new Vector3(k * offset, 2, l * offset), Quaternion.identity);
+                    Debug.Log("Instantiating wall at " + new Vector2(k, l));
+                    wp = (GameObject)Instantiate(waypoint, new Vector3(k * offset, 0.1f, l * offset), Quaternion.identity);
+                    wps.Add(val, wp.transform);
                 }
             }
         }
+        Debug.Log(enemies.Count);
+        Debug.Log(wps.Count);
+        foreach (KeyValuePair<string, Vector2> newenemy in enemies) {
+            
+      
+            GameObject enemyGO = (GameObject)Instantiate(enemy, new Vector3(newenemy.Value.x * offset, 2, newenemy.Value.y * offset), Quaternion.identity);
+            
+            List<Transform> wpss = new List<Transform>();
+            foreach (KeyValuePair<string, Transform> wayp in wps)
+            {
 
-
-
-        foreach (Vector2 position in enemies)
-        {            
-            GameObject enemyGO = (GameObject)Instantiate(enemy, new Vector3(position.x * offset, 2, position.y * offset), Quaternion.identity);
-            enemyGO.GetComponent<EnemyStateMachine>().addWaypoint(waypoint1);
+                if (wayp.Key[0] == newenemy.Key[1])
+                {
+                    wpss.Add(wayp.Value);
+                }
+            }           
+            enemyGO.GetComponent<EnemyStateMachine>().addWaypoints(wpss);
         }
 	}
 	

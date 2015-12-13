@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class EnemyStateMachine : MonoBehaviour {
 
@@ -199,7 +200,6 @@ public class EnemyStateMachine : MonoBehaviour {
     {
         if (debug)
             //Debug.Log("handlePatrolEntered()");
-
         
         m_nva.destination = waypoints[m_currWaypoint].position;
         m_nva.velocity = m_nva_velocity;
@@ -395,5 +395,15 @@ public class EnemyStateMachine : MonoBehaviour {
             i++;
         }
         return detected;
-    }    
+    }
+
+    public void addWaypoints(List<Transform> newWaypoints)
+    {
+        waypoints = new Transform[newWaypoints.Count];
+        int i = 0;
+        foreach (Transform tr in newWaypoints) {
+            waypoints[i] = tr;
+            i++;
+        }        
+    }
 }
