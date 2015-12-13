@@ -1,6 +1,3 @@
-*.ini
-*.meta
-
 # Vim backup files
 *.swp
 
@@ -12,3 +9,12 @@ ProjectSettings/
 *.unityproj
 *.sln
 *.mat
+*.ini
+*.meta
+
+# PlaceHolders
+*/_Placeholders/*
+
+# Sublime stuff
+*.sublime-project
+*.sublime-workspace

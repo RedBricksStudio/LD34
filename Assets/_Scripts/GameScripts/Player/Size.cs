@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class Size : MonoBehaviour {
 	// Attributes
+	public GameObject secretWall;
+	
 	[SerializeField]
 	private int size = 1;
-	[SerializeField]
 	private int MAX_SIZE;
-	public GameObject secretWall;
 
 	private GameObject player;
 

@@ -5,8 +5,7 @@ public class EnemyStateMachine : MonoBehaviour {
 
     public bool debug;
     
-    public enum EnemyStates
-    {
+    public enum EnemyStates {
         Idle, Patrol, Chasing, Attacking, LookAround
     }
 
@@ -213,8 +212,7 @@ public class EnemyStateMachine : MonoBehaviour {
         if (debug)
         //    Debug.Log("handlePatrol()");
 
-        if (playerDetected())
-        {
+        if (playerDetected()) {
             ChangeState(EnemyStates.Chasing);
         }
 
@@ -227,36 +225,32 @@ public class EnemyStateMachine : MonoBehaviour {
     }
 
     //Preparing
-    private void handleChasingEntered()
-    {
+    private void handleChasingEntered() {
         if (debug)
             Debug.Log("handleChasingEntered()" + m_playerToChase.name);
 
         m_nva.destination = m_playerToChase.position;
     }
 
-    private void handleChasing()
-    {
-        if (playerReached())
-        {
+    private void handleChasing() {
+        if (playerReached()) {
+            if(debug)
+                print("<color=red>Enemy " + gameObject.name + "has reached the player </color>");
             ChangeState(EnemyStates.Attacking);
         }
     }
 
-    private bool playerReached()
-    {
+    private bool playerReached() {
         return (m_tr.position - m_playerToChase.position).sqrMagnitude <= m_range;
     }
 
-    private void handleChasingExit()
-    {        
+    private void handleChasingExit() {        
         m_nva.velocity = Vector3.zero;
         m_nva.Stop();
     }
 
     //LookAround
-    private void handleLookAroundEntered()
-    {
+    private void handleLookAroundEntered() {
         m_nva_velocity = m_nva.velocity;
         m_nva.velocity = Vector3.zero;
         Debug.Log("handleLookAroundEntered()");
@@ -274,8 +268,7 @@ public class EnemyStateMachine : MonoBehaviour {
         Debug.Log(m_directionsToLookAt);
     }
 
-    private void handleLookAround()
-    {
+    private void handleLookAround() {
         //Debug.Log("handleLookAround()");
 
         //Look around with coroutines
@@ -287,8 +280,7 @@ public class EnemyStateMachine : MonoBehaviour {
         
     }
 
-    private IEnumerator lookAround()
-    {
+    private IEnumerator lookAround() {
         m_nva.Stop();
         bool detected = false;
         for (int i = 0; i < 4 && !detected; i++)
@@ -312,68 +304,57 @@ public class EnemyStateMachine : MonoBehaviour {
         m_nva.Resume();
         m_lookingAround = false;
         //Exit state
-        if (!detected)
-        {
+        if (!detected) {
             ChangeState(EnemyStates.Patrol);
         }
     }
 
     
 
-    private void handleLookAroundExit()
-    {
-        for (int i = 0; i < 4; i++)
-        {
+    private void handleLookAroundExit() {
+        for (int i = 0; i < 4; i++) {
             m_directionsToLookAt[i] = false;
         }
     }
 
     //Attacking
-    private void handleAttackingEntered()
-    {
+    private void handleAttackingEntered() {
         //Play attacking animation
     }
 
-    private void handleAttacking()
-    {
+    private void handleAttacking() {
+        Application.LoadLevel(2);
         //Destroy Scene and go to Game Over
     }
 
-    private void handleAttackingExit()
-    {
+    private void handleAttackingExit() {
         throw new System.NotImplementedException();
     }
 
 
     //OTHER METHODS
-    public void onPlayerSeen()
-    {
+    public void onPlayerSeen() {
         if (m_state.Equals(EnemyStates.LookAround) ||
             m_state.Equals(EnemyStates.Patrol) ||
-            m_state.Equals(EnemyStates.Idle))
-        {            
+            m_state.Equals(EnemyStates.Idle)) {            
             ChangeState(EnemyStates.Chasing);
         }
     }
 
-    void OnTriggerEnter(Collider col)
-    {       
+    void OnTriggerEnter(Collider col) {       
 
         if (col.tag.Equals("waypoint") && m_state.Equals(EnemyStates.Patrol) &&
-            col.transform.position == waypoints[m_currWaypoint].position && !m_waypointReached)
-        {
+            col.transform.position == waypoints[m_currWaypoint].position && !m_waypointReached) {
             m_currWaypoint = (m_currWaypoint + 1) % waypoints.GetLength(0);
             m_nva.destination = waypoints[m_currWaypoint].position;
             m_waypointReached = true;
-            if (m_lookAroundInWaypoints)
-            {
+            if (m_lookAroundInWaypoints) {
                 ChangeState(EnemyStates.LookAround);
             }
         }
     }
 
-    void OnTriggerExit(Collider col)
-    {
+    void OnTriggerExit(Collider col) {
         if (col.tag.Equals("waypoint") && m_waypointReached &&
             col.transform.position == waypoints[m_currWaypoint].position)
         {

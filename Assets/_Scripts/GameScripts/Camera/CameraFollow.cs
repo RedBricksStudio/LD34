@@ -4,7 +4,7 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour {
 
 	private Transform player;
-	private Transform camera;
+	private new Transform camera;
 	[SerializeField]
 	private float cameraDistance = 10f;
 	[SerializeField]
