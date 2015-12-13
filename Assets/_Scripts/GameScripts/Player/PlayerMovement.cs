@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using AssemblyCSharp;
 
 public class PlayerMovement : MonoBehaviour {
 
@@ -32,7 +31,6 @@ public class PlayerMovement : MonoBehaviour {
 
     public void slowDown() {
         m_speedDelta -= speedLoss;
-        print("New Player top speed is: " + m_speedDelta);
     }
 
     public void wardOffCamera() {
