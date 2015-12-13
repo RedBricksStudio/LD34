@@ -9,18 +9,34 @@ public class CameraFollow : MonoBehaviour {
 	private float cameraDistance = 10f;
 	[SerializeField]
 	private float cameraDistanceDelta = 1f;
-	private int timesWarded = 0;
+	[SerializeField]
+	private float inclination = 0.872665f;
+	private float realAngle;
+	private float adjacent;
+	private float opposite;
 
 	void Start() {
-		player = GameObject.Find("Player").GetComponent<Transform>();
+		player = GameObject.FindWithTag("Player").GetComponent<Transform>();
 		camera = GetComponent<Transform>();
+		realAngle = ((.5f * Mathf.PI) - (inclination));
+		camera.eulerAngles = new Vector3(inclination * Mathf.Rad2Deg, 0f, 0f);
+
+		gameObject.tag = "MainCamera";
+
 	}
   
 	void Update () {
-    	camera.position = new Vector3 (player.position.x, player.position.y, player.position.z - cameraDistance - cameraDistanceDelta * timesWarded);
+		adjacent = Mathf.Cos(realAngle) * cameraDistance;
+		opposite = Mathf.Tan(realAngle) * adjacent;
+    	camera.position = new Vector3(player.position.x, (player.position.y + opposite), player.position.z  - adjacent);
+    	// This rotates all the sprites to look at the camera
+		GameObject[] sprites = GameObject.FindGameObjectsWithTag("Sprite");
+		foreach(GameObject sprite in sprites) {
+			sprite.transform.LookAt(camera);
+		}
     }
 
     public void wardOff() {
-    	++timesWarded;
+    	cameraDistance += cameraDistanceDelta;
     }
 }

@@ -19,11 +19,12 @@ public class PlayerMovement : MonoBehaviour {
 	void Start () {
         m_rb = GetComponent<Rigidbody>();
         m_tr = GetComponent<Transform>();
+        gameObject.tag = "Player";
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        m_velocity = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f);
+        m_velocity = new Vector3( Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
         m_velocity = m_velocity.normalized * Time.deltaTime * m_speedDelta;
 
         m_rb.velocity = m_velocity;
