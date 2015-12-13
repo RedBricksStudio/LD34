@@ -4,10 +4,12 @@ using UnityEngine;
 public class PowerUp : MonoBehaviour {
 	void OnCollisionEnter (Collision other) {
 		if(other.gameObject.tag == "Player" || other.gameObject.tag == "PickUp") {
-			print("<color=green> " + other.gameObject.name + " has collided with " + gameObject.name + "</color>");
+
 			other.gameObject.SendMessage("grow");
 			GetComponent<Transform>().SetParent(other.transform, true);
 			gameObject.tag = "Player";
  		}
+
+
 	}
 }

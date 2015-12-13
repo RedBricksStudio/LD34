@@ -20,8 +20,10 @@ public class CameraFollow : MonoBehaviour {
 		camera = GetComponent<Transform>();
 		realAngle = ((.5f * Mathf.PI) - (inclination));
 		camera.eulerAngles = new Vector3(inclination * Mathf.Rad2Deg, 0f, 0f);
+
 		realAngle = inclination;
 		gameObject.tag = "MainCamera";
+
 	}
   
 	void Update () {
