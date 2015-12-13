@@ -1,9 +1,0 @@
-Pickable.cs is a script to hold an Item, and provide the mechanism to PICK IT UP.
-
-Pickable item usage:
-
-1.- Create a script extending Pickable.cs. The only thing it has to do is define 
-	the "bool canBePicked()" method.
-2.- Attach the new script to the object in the scene
-3.- Fill in the fields (Hint and Item)
-4.- Done!
