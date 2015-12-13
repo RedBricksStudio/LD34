@@ -26,8 +26,6 @@ public class PlayerMovement : MonoBehaviour {
         m_velocity = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0f);
         m_velocity = m_velocity.normalized * Time.deltaTime * m_speedDelta;
 
-        print("Velocity is:" + m_velocity.x + m_velocity.y);
-
         m_rb.velocity = m_velocity;
 	}
 
