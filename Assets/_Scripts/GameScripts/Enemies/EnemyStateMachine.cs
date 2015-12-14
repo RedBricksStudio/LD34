@@ -333,7 +333,7 @@ public class EnemyStateMachine : MonoBehaviour {
     }
 
     private void handleAttacking() {
-        Application.LoadLevel("Game");
+        Application.LoadLevel("GameOver");
         //Destroy Scene and go to Game Over
     }
 
