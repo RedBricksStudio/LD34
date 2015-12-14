@@ -16,8 +16,10 @@ public class PlayerMovement : MonoBehaviour {
 	private bool back;
 	private int count_iddle = 0;
 
+    private bool inOriginalPosition = true;
+
     private Rigidbody m_rb;
-    private Transform m_tr;
+    private Transform m_tr;    
 
     private Vector3 m_velocity = new Vector3(0, 0, 0);
     private Animator anim;
@@ -35,8 +37,7 @@ public class PlayerMovement : MonoBehaviour {
         m_velocity = new Vector3( Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
         m_velocity = m_velocity.normalized * Time.deltaTime * m_speedDelta;
 
-
-		print ("Hey this is for debug" + m_velocity.z);
+		//print ("Hey this is for debug" + m_velocity.z);
         if((m_velocity.x == 0) && (m_velocity.z == 0) ){
 			count_iddle++;
 			if (!iddle && count_iddle == 4) {
@@ -51,8 +52,13 @@ public class PlayerMovement : MonoBehaviour {
         }
 
         else if(m_velocity.x > 0){
-			if (!right) {
-				anim.SetTrigger ("left");
+            if (inOriginalPosition)
+            {
+                Flip();
+            }
+			if (!right) {                
+
+				anim.SetTrigger ("left");                
 				iddle = false;
 				left = false;
 				right = true;
@@ -62,7 +68,12 @@ public class PlayerMovement : MonoBehaviour {
 			}
         }
         else if(m_velocity.x < 0){
-			if (!left) {
+            if (!inOriginalPosition)
+            {
+                Flip();
+            }
+			if (!left) {               
+
 				anim.SetTrigger ("left");
 				iddle = false;
 				left = true;
@@ -97,6 +108,16 @@ public class PlayerMovement : MonoBehaviour {
 
         m_rb.velocity = m_velocity;
 	}
+
+    private void Flip()
+    {
+        print("Flipping the pancake");
+        Vector3 newScale = GetComponentInChildren<SpriteRenderer>().transform.localScale;
+        newScale.x *= -1;
+        GetComponentInChildren<SpriteRenderer>().transform.localScale = newScale;
+
+        inOriginalPosition = !inOriginalPosition;
+    }
 
     public void slowDown() {
         m_speedDelta -= speedLoss;

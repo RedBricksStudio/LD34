@@ -42,7 +42,7 @@ public class InstantiateFromTMX : MonoBehaviour {
                 } else if (val.Contains("E")) {
                     enemies.Add(val, new Vector2(k, l)); 
                 } else if (val.Equals("CC")) {
-                    GameObject.Instantiate(pickup, new Vector3(k * offset, 2, l * offset), Quaternion.identity);
+                    GameObject.Instantiate(pickup, new Vector3(k * offset, 0.5f, l * offset), Quaternion.identity);
                 }
                 else if (Regex.IsMatch(val, "[0-9][0-9]"))
                 {                    

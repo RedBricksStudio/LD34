@@ -7,6 +7,7 @@ public class PowerUp : MonoBehaviour {
 			other.gameObject.SendMessage("grow");
 			GetComponent<Transform>().SetParent(other.transform, true);
 			gameObject.tag = "Player";
+            GetComponent<PlayerMovement>().enabled = true;
  		}
 	}
 }
