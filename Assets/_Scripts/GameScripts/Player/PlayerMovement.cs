@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour {
 				anim.SetTrigger ("iddle");
 				iddle = true;
 				left = false;
-				right = false;
+                right = false;
 				front = false;
 				back = false;
 			}

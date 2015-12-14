@@ -246,7 +246,7 @@ public class EnemyStateMachine : MonoBehaviour {
         else if((m_tr.position - m_nva.destination).sqrMagnitude <= m_range / 4) {
             if(debug)
                 print("<color=yellow>Enemy " + gameObject.name + "is going back to patrolling </color>");
-            ChangeState(EnemyStates.Patrol);
+            ChangeState(EnemyStates.LookAround);
         }
     }
 
