@@ -38,8 +38,9 @@ public class InstantiateFromTMX : MonoBehaviour {
                 {
                     //Debug.Log("Instantiating wall at " + new Vector2(k, l));
                     GameObject.Instantiate(floor, new Vector3(k * offset, 0.1f, l * offset), Quaternion.LookRotation(-Vector3.up));
-                    GameObject newWall = (GameObject)Instantiate(wall, new Vector3(k * offset, 1, l * offset), Quaternion.identity);                    
+                    GameObject newWall = (GameObject)Instantiate(wall, new Vector3(k * offset, 1, l * offset), Quaternion.LookRotation(Vector3.right));                    
                 } else if (val.Equals("PP")) {
+                    GameObject.Instantiate(floor, new Vector3(k * offset, 0.1f, l * offset), Quaternion.LookRotation(-Vector3.up));
                     GameObject.Instantiate(player, new Vector3(k * offset, 0.5f, l * offset), Quaternion.identity);
                 } else if (val.Contains("E")) {
                     enemies.Add(val, new Vector2(k, l)); 
@@ -53,6 +54,7 @@ public class InstantiateFromTMX : MonoBehaviour {
                 }
                 else if (Regex.IsMatch(val, "[0-9][0-9]"))
                 {
+                    GameObject.Instantiate(floor, new Vector3(k * offset, 0.1f, l * offset), Quaternion.LookRotation(-Vector3.up));
                     wp = (GameObject)Instantiate(waypoint, new Vector3(k * offset, 0.1f, l * offset), Quaternion.identity);
                     wps.Add(val, wp.transform);
                 }
