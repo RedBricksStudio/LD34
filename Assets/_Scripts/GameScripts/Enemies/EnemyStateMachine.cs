@@ -238,6 +238,11 @@ public class EnemyStateMachine : MonoBehaviour {
                 print("<color=red>Enemy " + gameObject.name + "has reached the player </color>");
             ChangeState(EnemyStates.Attacking);
         }
+        else if((m_tr.position - m_nva.destination).sqrMagnitude <= m_range / 4) {
+            if(debug)
+                print("<color=yellow>Enemy " + gameObject.name + "is going back to patrolling </color>");
+            ChangeState(EnemyStates.Patrol);
+        }
     }
 
     private bool playerReached() {
