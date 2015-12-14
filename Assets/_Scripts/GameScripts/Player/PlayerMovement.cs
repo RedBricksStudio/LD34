@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour {
 	private bool right;
 	private bool front;
 	private bool back;
+	private int count_iddle = 0;
 
     private Rigidbody m_rb;
     private Transform m_tr;
@@ -27,7 +28,6 @@ public class PlayerMovement : MonoBehaviour {
         m_tr = GetComponent<Transform>();
         gameObject.tag = "Player";
 		anim = gameObject.GetComponentInChildren<Animator> ();
-
 	}
 	
 	// Update is called once per frame
@@ -36,15 +36,17 @@ public class PlayerMovement : MonoBehaviour {
         m_velocity = m_velocity.normalized * Time.deltaTime * m_speedDelta;
 
 
-		//print ("Hey this is for debug" + m_velocity.z);
+		print ("Hey this is for debug" + m_velocity.z);
         if((m_velocity.x == 0) && (m_velocity.z == 0) ){
-			if (!iddle) {
+			count_iddle++;
+			if (!iddle && count_iddle == 4) {
 				anim.SetTrigger ("iddle");
 				iddle = true;
 				left = false;
-                right = false;
+				right = false;
 				front = false;
 				back = false;
+				count_iddle = 0;
 			}
         }
 
@@ -56,6 +58,7 @@ public class PlayerMovement : MonoBehaviour {
 				right = true;
 				front = false;
 				back = false;
+				count_iddle = 0;
 			}
         }
         else if(m_velocity.x < 0){
@@ -66,6 +69,7 @@ public class PlayerMovement : MonoBehaviour {
 				right = false;
 				front = false;
 				back = false;
+				count_iddle = 0;
 			}
         }
         else if(m_velocity.z < 0){
@@ -76,6 +80,7 @@ public class PlayerMovement : MonoBehaviour {
 				right = false;
 				front = true;
 				back = false;
+				count_iddle = 0;
 			}
         }
         else if(m_velocity.z > 0){
@@ -86,6 +91,7 @@ public class PlayerMovement : MonoBehaviour {
 				right = false;
 				front = false;
 				back = true;
+				count_iddle = 0;
 			}
         }
 
