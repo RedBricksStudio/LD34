@@ -12,6 +12,7 @@ public class InstantiateFromTMX : MonoBehaviour {
     public GameObject enemy;
     public GameObject pickup;
     public GameObject waypoint;
+    public GameObject floor;
 
     public int rows;
     public int columns;
@@ -44,8 +45,12 @@ public class InstantiateFromTMX : MonoBehaviour {
                 } else if (val.Equals("CC")) {
                     GameObject.Instantiate(pickup, new Vector3(k * offset, 0.5f, l * offset), Quaternion.identity);
                 }
+                else if (val.Equals("__"))
+                {
+                    GameObject.Instantiate(floor, new Vector3(k * offset, 0.1f, l * offset), Quaternion.LookRotation(-Vector3.up));
+                }
                 else if (Regex.IsMatch(val, "[0-9][0-9]"))
-                {                    
+                {
                     wp = (GameObject)Instantiate(waypoint, new Vector3(k * offset, 0.1f, l * offset), Quaternion.identity);
                     wps.Add(val, wp.transform);
                 }
