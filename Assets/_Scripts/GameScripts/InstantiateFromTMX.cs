@@ -32,21 +32,20 @@ public class InstantiateFromTMX : MonoBehaviour {
         for(int k=0;k < rows;k++) {
             for (int l = 0; l < columns; l++)
             {
-                string val = tiles[l, k];
+                string val = tiles[k, l];
                 if (val.Equals("WW"))
                 {
                     //Debug.Log("Instantiating wall at " + new Vector2(k, l));
-                    GameObject newWall = (GameObject)Instantiate(wall, new Vector3(k * offset, 2, l * offset), Quaternion.identity);                    
+                    GameObject newWall = (GameObject)Instantiate(wall, new Vector3(k * offset, 1, l * offset), Quaternion.identity);                    
                 } else if (val.Equals("PP")) {
-                    GameObject.Instantiate(player, new Vector3(k * offset, 2, l * offset), Quaternion.identity);
+                    GameObject.Instantiate(player, new Vector3(k * offset, 0.5f, l * offset), Quaternion.identity);
                 } else if (val.Contains("E")) {
                     enemies.Add(val, new Vector2(k, l)); 
                 } else if (val.Equals("CC")) {
                     GameObject.Instantiate(pickup, new Vector3(k * offset, 2, l * offset), Quaternion.identity);
                 }
                 else if (Regex.IsMatch(val, "[0-9][0-9]"))
-                {
-                    Debug.Log("Instantiating wall at " + new Vector2(k, l));
+                {                    
                     wp = (GameObject)Instantiate(waypoint, new Vector3(k * offset, 0.1f, l * offset), Quaternion.identity);
                     wps.Add(val, wp.transform);
                 }
@@ -57,12 +56,11 @@ public class InstantiateFromTMX : MonoBehaviour {
         foreach (KeyValuePair<string, Vector2> newenemy in enemies) {
             
       
-            GameObject enemyGO = (GameObject)Instantiate(enemy, new Vector3(newenemy.Value.x * offset, 2, newenemy.Value.y * offset), Quaternion.identity);
+            GameObject enemyGO = (GameObject)Instantiate(enemy, new Vector3(newenemy.Value.x * offset, 0.5f, newenemy.Value.y * offset), Quaternion.identity);
             
             List<Transform> wpss = new List<Transform>();
             foreach (KeyValuePair<string, Transform> wayp in wps)
             {
-
                 if (wayp.Key[0] == newenemy.Key[1])
                 {
                     wpss.Add(wayp.Value);

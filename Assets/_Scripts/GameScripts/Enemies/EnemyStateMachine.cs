@@ -39,13 +39,15 @@ public class EnemyStateMachine : MonoBehaviour {
     Transform m_tr;
     Rigidbody m_rb;
     NavMeshAgent m_nva;
+    Animator m_anim;
 
 	// Use this forinitialization
 	void Start () {
         m_tr = GetComponent<Transform>();
         m_rb = GetComponent<Rigidbody>();
         m_nva = GetComponent<NavMeshAgent>();
-
+        m_anim = GetComponentInChildren<Animator>();
+        
         ChangeState(EnemyStates.Patrol);
 	}
 	
@@ -64,16 +66,19 @@ public class EnemyStateMachine : MonoBehaviour {
                     m_direction.x = -1;
                 }
                 m_direction.z = 0;
+                m_anim.SetInteger("direction", 1);
             }
             else
             {
                 if (m_nva.velocity.z > 0)
                 {
                     m_direction.z = 1;
+                    m_anim.SetInteger("direction", 3);
                 }
                 else
                 {
                     m_direction.z = -1;
+                    m_anim.SetInteger("direction", 4);
                 }
                 m_direction.x = 0;
             }
@@ -328,7 +333,7 @@ public class EnemyStateMachine : MonoBehaviour {
     }
 
     private void handleAttacking() {
-        Application.LoadLevel(2);
+        Application.LoadLevel("Game");
         //Destroy Scene and go to Game Over
     }
 
