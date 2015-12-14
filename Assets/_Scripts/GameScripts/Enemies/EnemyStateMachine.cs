@@ -32,6 +32,13 @@ public class EnemyStateMachine : MonoBehaviour {
     private bool m_lookAroundInWaypoints;
 
     private Vector3 m_direction;
+    private bool inOriginalPosition = true;
+    private bool walk_back = false;
+    private bool walk_front = false;
+    private bool walk_side = false;
+    private bool idle_back = false;
+    private bool idle_side = false;
+    private bool idle_front = false;
 
     private Transform m_playerToChase;
 
@@ -39,20 +46,20 @@ public class EnemyStateMachine : MonoBehaviour {
     Transform m_tr;
     Rigidbody m_rb;
     NavMeshAgent m_nva;
-    Animator m_anim;
+    private Animator m_anim;
 
 	// Use this forinitialization
 	void Start () {
         m_tr = GetComponent<Transform>();
         m_rb = GetComponent<Rigidbody>();
         m_nva = GetComponent<NavMeshAgent>();
-        m_anim = GetComponentInChildren<Animator>();
-        
+        m_anim = gameObject.GetComponentInChildren<Animator>();
+        m_anim.SetTrigger("idle_front");
         ChangeState(EnemyStates.Patrol);
 	}
 	
 	// Update is called once per frame
-	void FixedUpdate () {
+	void Update () {
         if (!m_lookingAround)
         {
             if (Mathf.Abs(m_nva.velocity.x) - Mathf.Abs(m_nva.velocity.z) > 0)
@@ -60,28 +67,134 @@ public class EnemyStateMachine : MonoBehaviour {
                 if (m_nva.velocity.x > 0)
                 {
                     m_direction.x = 1;
+                    if (inOriginalPosition)
+                    {
+                        Flip();
+                    }
                 }
                 else
                 {
                     m_direction.x = -1;
+                    if (!inOriginalPosition)
+                    {
+                        Flip();
+                    }
                 }
                 m_direction.z = 0;
-                m_anim.SetInteger("direction", 1);
+                if (!walk_side)
+                {
+                    m_anim.SetTrigger("walk_side");
+                    walk_front = false;
+                    walk_side = true;
+                    walk_back = false;
+                    idle_front = false;
+                    idle_side = false;
+                    idle_back = false;
+                    Debug.Log("walk_side");
+                }                
             }
             else
             {
                 if (m_nva.velocity.z > 0)
                 {
                     m_direction.z = 1;
-                    m_anim.SetInteger("direction", 3);
+                    if (!walk_back)
+                    {
+                        m_anim.SetTrigger("walk_back");
+                        Debug.Log("walk_back");
+                        walk_front = false;
+                        walk_side = false;
+                        walk_back = true;
+                        idle_front = false;
+                        idle_side = false;
+                        idle_back = false;
+                    }      
                 }
-                else
+                else 
                 {
                     m_direction.z = -1;
-                    m_anim.SetInteger("direction", 4);
+                    if (!walk_front)
+                    {
+                        m_anim.SetTrigger("walk_front");
+                        walk_front = true;
+                        walk_side = false;
+                        walk_back = false;
+                        idle_front = false;
+                        idle_side = false;
+                        idle_back = false;
+                        Debug.Log("walk_front");
+                    }
+                              
                 }
                 m_direction.x = 0;
             }
+        }
+        else
+        {  /*
+            if (m_direction.Equals(new Vector3(0.0f, 0.0f, 1f))) {
+                Debug.Log(m_direction);
+                if (!idle_back)
+                {
+                    m_anim.SetTrigger("idle_back");
+                    walk_front = false;
+                    walk_side = false;
+                    walk_back = false;
+                    idle_front = false;
+                    idle_side = false;
+                    idle_back = true;
+                    Debug.Log(m_direction + "idle_back");
+                }
+            } else if (m_direction.x != 0.0f)
+            {                
+                if ((inOriginalPosition && m_direction.x == 1) ||
+                    (!inOriginalPosition && m_direction.x == -1))
+                {
+                    Flip();
+                }
+                if (!idle_side)
+                {
+                    m_anim.SetTrigger("idle_side");
+                    walk_front = false;
+                    walk_side = false;
+                    walk_back = false;
+                    idle_front = false;
+                    idle_side = true;
+                    idle_back = false;
+                    Debug.Log(m_direction + "idle_side");
+                }
+            }
+            else
+            {                
+                if (m_direction.z == 1.0f)
+                {
+                    
+                    if (!idle_back)
+                    {
+                        m_anim.SetTrigger("idle_back");
+                        walk_front = false;
+                        walk_side = false;
+                        walk_back = false;
+                        idle_front = false;
+                        idle_side = false;
+                        idle_back = true;
+                        Debug.Log(m_direction + "idle_back");
+                    }
+                }
+                else if (m_direction.z == -1)
+                {
+                    if (!idle_front)
+                    {
+                        m_anim.SetTrigger("idle_front");
+                        walk_front = false;
+                        walk_side = false;
+                        walk_back = false;
+                        idle_front = true;
+                        idle_side = false;
+                        idle_back = false;
+                        Debug.Log(m_direction + "idle_front");
+                    }
+                }
+            }*/
         }
 
         //Change Animation
@@ -110,7 +223,9 @@ public class EnemyStateMachine : MonoBehaviour {
     private void onStateEnter(EnemyStates m_state)
     {
         if (debug)
+        {
             Debug.Log("Entering state" + m_state);
+        }
 
         switch (m_state) 
         {
@@ -136,8 +251,9 @@ public class EnemyStateMachine : MonoBehaviour {
     private void onState(EnemyStates m_state)
     {
         if (debug)
+        {
             //Debug.Log("Handling state" + m_state);
-
+        }
         switch (m_state)
         {
             case EnemyStates.Idle:
@@ -161,7 +277,9 @@ public class EnemyStateMachine : MonoBehaviour {
     private void onStateExit(EnemyStates m_state)
     {
         if (debug)
+        {
             Debug.Log("Exiting state" + m_state);
+        }
 
         switch (m_state)
         {
@@ -203,7 +321,7 @@ public class EnemyStateMachine : MonoBehaviour {
     //Patrol
     private void handlePatrolEntered()
     {
-        if (debug)
+        //if (debug)
             //Debug.Log("handlePatrolEntered()");
         
         m_nva.destination = waypoints[m_currWaypoint].position;
@@ -214,7 +332,7 @@ public class EnemyStateMachine : MonoBehaviour {
     private void handlePatrol()
     {
         
-        if (debug)
+        //if (debug)
         //    Debug.Log("handlePatrol()");
 
 
@@ -246,21 +364,27 @@ public class EnemyStateMachine : MonoBehaviour {
     //Preparing
     private void handleChasingEntered() {
         if (debug)
+        {
             Debug.Log("handleChasingEntered()" + m_playerToChase.name);
-
+        }
         m_nva.destination = m_playerToChase.position;
     }
 
     private void handleChasing() {
         if (playerReached()) {
-            if(debug)
+            if (debug)
+            {
                 print("<color=red>Enemy " + gameObject.name + "has reached the player </color>");
+            }
             ChangeState(EnemyStates.Attacking);
         }
         else if((m_tr.position - m_nva.destination).sqrMagnitude <= m_range / 4) {
-            if(debug)
+            if (debug)
+            {
                 print("<color=yellow>Enemy " + gameObject.name + "is going back to patrolling </color>");
+            }
             ChangeState(EnemyStates.LookAround);
+
         }
     }
 
@@ -288,8 +412,7 @@ public class EnemyStateMachine : MonoBehaviour {
                     m_directionsToLookAt[i] = true;
                 }
             }
-        }
-        Debug.Log(m_directionsToLookAt);
+        }        
     }
 
     private void handleLookAround() {
@@ -309,9 +432,76 @@ public class EnemyStateMachine : MonoBehaviour {
         bool detected = false;
         for (int i = 0; i < 4 && !detected; i++)
         {
+
+            //Change looking direction - Harcodeado porque me esta volviendo loco
+            if (i == 0)
+            {
+                if (!idle_front)
+                {
+                    m_anim.SetTrigger("idle_front");
+                    walk_front = false;
+                    walk_side = false;
+                    walk_back = false;
+                    idle_front = true;
+                    idle_side = false;
+                    idle_back = false;
+                    Debug.Log(m_direction + "idle_front");
+                }
+            }else if (i == 1) {
+                if (!inOriginalPosition)
+                {
+                    Flip();
+                }
+
+                if (!idle_side)
+                {
+                    m_anim.SetTrigger("idle_side");
+                    walk_front = false;
+                    walk_side = false;
+                    walk_back = false;
+                    idle_front = false;
+                    idle_side = true;
+                    idle_back = false;
+                    Debug.Log(m_direction + "idle_side");
+                }
+            }
+            else if (i == 2)
+            {
+                if (!idle_back)
+                {
+                    m_anim.SetTrigger("idle_back");
+                    walk_front = false;
+                    walk_side = false;
+                    walk_back = false;
+                    idle_front = false;
+                    idle_side = false;
+                    idle_back = true;
+                    Debug.Log(m_direction + "idle_back");
+                }
+            }
+            else if (i == 3)
+            {
+                if (inOriginalPosition)
+                {
+                    Flip();
+                }
+                
+                if (!idle_side)
+                {
+                    m_anim.SetTrigger("idle_side");
+                    walk_front = false;
+                    walk_side = false;
+                    walk_back = false;
+                    idle_front = false;
+                    idle_side = true;
+                    idle_back = false;
+                    Debug.Log(m_direction + "idle_side");
+                }
+            }           
+
             //if (m_directionsToLookAt[i])
             //{
-            Debug.Log("Detecting Player in Dir" + m_direction + detected);
+            //Debug.Log("Detecting Player in Dir" + m_direction + detected);
             if (playerDetected())
             {
                 detected = true;
@@ -323,17 +513,19 @@ public class EnemyStateMachine : MonoBehaviour {
             {
                 yield return new WaitForSeconds(2);
             }
-            m_direction = rotateVector(m_direction, 90);
+            m_direction = rotateVector(m_direction, 90);                   
+
         }
         m_nva.Resume();
         m_lookingAround = false;
+
+        //Flip();
+
         //Exit state
         if (!detected) {
             ChangeState(EnemyStates.Patrol);
         }
-    }
-
-    
+    }    
 
     private void handleLookAroundExit() {
         for (int i = 0; i < 4; i++) {
@@ -422,5 +614,15 @@ public class EnemyStateMachine : MonoBehaviour {
             waypoints[i] = tr;
             i++;
         }        
+    }
+
+    private void Flip()
+    {
+        Debug.Log("Flipping the pancake");
+        Vector3 newScale = GetComponentInChildren<SpriteRenderer>().transform.localScale;
+        newScale.x *= -1;
+        GetComponentInChildren<SpriteRenderer>().transform.localScale = newScale;
+
+        inOriginalPosition = !inOriginalPosition;
     }
 }

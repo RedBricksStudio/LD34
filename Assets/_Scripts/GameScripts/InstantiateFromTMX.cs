@@ -37,12 +37,14 @@ public class InstantiateFromTMX : MonoBehaviour {
                 if (val.Equals("WW"))
                 {
                     //Debug.Log("Instantiating wall at " + new Vector2(k, l));
+                    GameObject.Instantiate(floor, new Vector3(k * offset, 0.1f, l * offset), Quaternion.LookRotation(-Vector3.up));
                     GameObject newWall = (GameObject)Instantiate(wall, new Vector3(k * offset, 1, l * offset), Quaternion.identity);                    
                 } else if (val.Equals("PP")) {
                     GameObject.Instantiate(player, new Vector3(k * offset, 0.5f, l * offset), Quaternion.identity);
                 } else if (val.Contains("E")) {
                     enemies.Add(val, new Vector2(k, l)); 
                 } else if (val.Equals("CC")) {
+                    GameObject.Instantiate(floor, new Vector3(k * offset, 0.1f, l * offset), Quaternion.LookRotation(-Vector3.up));
                     GameObject.Instantiate(pickup, new Vector3(k * offset, 0.5f, l * offset), Quaternion.identity);
                 }
                 else if (val.Equals("__"))
@@ -59,8 +61,8 @@ public class InstantiateFromTMX : MonoBehaviour {
         Debug.Log(enemies.Count);
         Debug.Log(wps.Count);
         foreach (KeyValuePair<string, Vector2> newenemy in enemies) {
-            
-      
+
+            GameObject.Instantiate(floor, new Vector3(newenemy.Value.x * offset, 0.1f, newenemy.Value.y * offset), Quaternion.LookRotation(-Vector3.up));
             GameObject enemyGO = (GameObject)Instantiate(enemy, new Vector3(newenemy.Value.x * offset, 0.5f, newenemy.Value.y * offset), Quaternion.identity);
             
             List<Transform> wpss = new List<Transform>();

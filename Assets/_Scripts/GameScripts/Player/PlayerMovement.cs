@@ -111,7 +111,7 @@ public class PlayerMovement : MonoBehaviour {
 
     private void Flip()
     {
-        print("Flipping the pancake");
+        //print("Flipping the pancake");
         Vector3 newScale = GetComponentInChildren<SpriteRenderer>().transform.localScale;
         newScale.x *= -1;
         GetComponentInChildren<SpriteRenderer>().transform.localScale = newScale;
