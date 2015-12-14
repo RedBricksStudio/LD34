@@ -15,15 +15,11 @@ public class PlayerMovement : MonoBehaviour {
 	private bool front;
 	private bool back;
 
-	private Time initialT;
-	private Time finalT;
-
     private Rigidbody m_rb;
     private Transform m_tr;
 
     private Vector3 m_velocity = new Vector3(0, 0, 0);
     private Animator anim;
-	private Animation animation;
 
 	// Use this for initialization
 	void Start () {
@@ -42,7 +38,7 @@ public class PlayerMovement : MonoBehaviour {
 
 		print ("Hey this is for debug" + m_velocity.z);
         if((m_velocity.x == 0) && (m_velocity.z == 0) ){
-			if (!iddle &&) {
+			if (!iddle) {
 				anim.SetTrigger ("iddle");
 				iddle = true;
 				left = false;
