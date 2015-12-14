@@ -36,7 +36,7 @@ public class PlayerMovement : MonoBehaviour {
         m_velocity = m_velocity.normalized * Time.deltaTime * m_speedDelta;
 
 
-		print ("Hey this is for debug" + m_velocity.z);
+		//print ("Hey this is for debug" + m_velocity.z);
         if((m_velocity.x == 0) && (m_velocity.z == 0) ){
 			if (!iddle) {
 				anim.SetTrigger ("iddle");

@@ -217,9 +217,23 @@ public class EnemyStateMachine : MonoBehaviour {
         if (debug)
         //    Debug.Log("handlePatrol()");
 
+
+
         if (playerDetected()) {
             ChangeState(EnemyStates.Chasing);
         }
+        else if (m_waypointReached)
+        {
+            m_currWaypoint = (m_currWaypoint + 1) % waypoints.GetLength(0);
+            m_nva.destination = waypoints[m_currWaypoint].position;
+            m_waypointReached = false;
+            if (m_lookAroundInWaypoints)
+            {
+                ChangeState(EnemyStates.LookAround);
+            }
+        }
+
+
 
     }   
 
@@ -355,23 +369,16 @@ public class EnemyStateMachine : MonoBehaviour {
 
         if (col.tag.Equals("waypoint") && m_state.Equals(EnemyStates.Patrol) &&
             col.transform.position == waypoints[m_currWaypoint].position && !m_waypointReached) {
-            m_currWaypoint = (m_currWaypoint + 1) % waypoints.GetLength(0);
+                Debug.Log("waypointreaached");
+            /*m_currWaypoint = (m_currWaypoint + 1) % waypoints.GetLength(0);
             m_nva.destination = waypoints[m_currWaypoint].position;
             m_waypointReached = true;
             if (m_lookAroundInWaypoints) {
                 ChangeState(EnemyStates.LookAround);
-            }
+            }*/
+             m_waypointReached = true;
         }
-    }
-
-    void OnTriggerExit(Collider col) {
-        if (col.tag.Equals("waypoint") && m_waypointReached &&
-            col.transform.position == waypoints[m_currWaypoint].position)
-        {
-            m_waypointReached = false;
-        }
-    }
-
+    }   
     private Vector3 rotateVector(Vector3 m_direction, int p)
     {
         return Quaternion.AngleAxis(p, Vector3.up) * m_direction;
