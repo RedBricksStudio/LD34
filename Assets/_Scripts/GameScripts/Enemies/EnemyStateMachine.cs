@@ -15,6 +15,7 @@ public class EnemyStateMachine : MonoBehaviour {
     //Patrol Attributes
     private int m_currWaypoint = 0;
     public Transform[] waypoints;
+    public AudioClip zarpazo;
 
     private bool[] m_directionsToLookAt = new bool[4];
     private bool m_waypointReached = false;
@@ -39,6 +40,7 @@ public class EnemyStateMachine : MonoBehaviour {
     private bool idle_back = false;
     private bool idle_side = false;
     private bool idle_front = false;
+    private bool attacking = false;
 
     private Transform m_playerToChase;
 
@@ -128,74 +130,7 @@ public class EnemyStateMachine : MonoBehaviour {
                 }
                 m_direction.x = 0;
             }
-        }
-        else
-        {  /*
-            if (m_direction.Equals(new Vector3(0.0f, 0.0f, 1f))) {
-                Debug.Log(m_direction);
-                if (!idle_back)
-                {
-                    m_anim.SetTrigger("idle_back");
-                    walk_front = false;
-                    walk_side = false;
-                    walk_back = false;
-                    idle_front = false;
-                    idle_side = false;
-                    idle_back = true;
-                    Debug.Log(m_direction + "idle_back");
-                }
-            } else if (m_direction.x != 0.0f)
-            {                
-                if ((inOriginalPosition && m_direction.x == 1) ||
-                    (!inOriginalPosition && m_direction.x == -1))
-                {
-                    Flip();
-                }
-                if (!idle_side)
-                {
-                    m_anim.SetTrigger("idle_side");
-                    walk_front = false;
-                    walk_side = false;
-                    walk_back = false;
-                    idle_front = false;
-                    idle_side = true;
-                    idle_back = false;
-                    Debug.Log(m_direction + "idle_side");
-                }
-            }
-            else
-            {                
-                if (m_direction.z == 1.0f)
-                {
-                    
-                    if (!idle_back)
-                    {
-                        m_anim.SetTrigger("idle_back");
-                        walk_front = false;
-                        walk_side = false;
-                        walk_back = false;
-                        idle_front = false;
-                        idle_side = false;
-                        idle_back = true;
-                        Debug.Log(m_direction + "idle_back");
-                    }
-                }
-                else if (m_direction.z == -1)
-                {
-                    if (!idle_front)
-                    {
-                        m_anim.SetTrigger("idle_front");
-                        walk_front = false;
-                        walk_side = false;
-                        walk_back = false;
-                        idle_front = true;
-                        idle_side = false;
-                        idle_back = false;
-                        Debug.Log(m_direction + "idle_front");
-                    }
-                }
-            }*/
-        }
+        }        
 
         //Change Animation
         //m_anim.sendSpeedX();
@@ -539,9 +474,23 @@ public class EnemyStateMachine : MonoBehaviour {
     }
 
     private void handleAttacking() {
-        Application.LoadLevel("GameOver");
+        StartCoroutine(Attack());        
         //Destroy Scene and go to Game Over
     }
+
+    private IEnumerator Attack()
+    {
+        if (!attacking)
+        {
+            m_anim.SetTrigger("attack");
+            attacking = true;
+        }
+        GetComponent<AudioSource>().Play();
+        yield return new WaitForSeconds(1);
+        Application.LoadLevel(3);
+        //Time.timeScale = 0f;
+    }
+
 
     private void handleAttackingExit() {
         throw new System.NotImplementedException();

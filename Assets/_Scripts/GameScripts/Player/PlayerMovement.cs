@@ -34,6 +34,10 @@ public class PlayerMovement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (Input.GetButtonDown("Restart"))
+        {
+            Application.LoadLevel(2);
+        }
         m_velocity = new Vector3( Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
         m_velocity = m_velocity.normalized * Time.deltaTime * m_speedDelta;
 

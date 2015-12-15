@@ -13,6 +13,7 @@ public class InstantiateFromTMX : MonoBehaviour {
     public GameObject pickup;
     public GameObject waypoint;
     public GameObject floor;
+    public GameObject salida;
 
     public int rows;
     public int columns;
@@ -47,6 +48,10 @@ public class InstantiateFromTMX : MonoBehaviour {
                 } else if (val.Equals("CC")) {
                     GameObject.Instantiate(floor, new Vector3(k * offset, 0.1f, l * offset), Quaternion.LookRotation(-Vector3.up));
                     GameObject.Instantiate(pickup, new Vector3(k * offset, 0.5f, l * offset), Quaternion.identity);
+                }
+                else if (val.Equals("SS"))
+                {
+                    GameObject.Instantiate(salida, new Vector3(k * offset, 0.1f, l * offset), Quaternion.LookRotation(-Vector3.up));
                 }
                 else if (val.Equals("__"))
                 {
