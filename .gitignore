@@ -1,0 +1,20 @@
+# Vim backup files
+*.swp
+
+# Unity Stuff
+Library/
+Temp/
+ProjectSettings/
+*.csproj
+*.unityproj
+*.sln
+*.mat
+*.ini
+*.meta
+
+# PlaceHolders
+*/_Placeholders/*
+
+# Sublime stuff
+*.sublime-project
+*.sublime-workspace
