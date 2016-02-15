@@ -1,20 +1,26 @@
-# Vim backup files
-*.swp
+# Ignore everything
+/*
+/*/
 
-# Unity Stuff
-Library/
-Temp/
-ProjectSettings/
-*.csproj
-*.unityproj
-*.sln
-*.mat
-*.ini
-*.meta
+# Unignore the Unity Folders we want
+!/Assets/
+!/ProjectSettings/
+!.gitignore
+!README.md
+!LICENSE
 
-# PlaceHolders
-*/_Placeholders/*
+# Sublime Text Workspaces & Projects
+*.sublime-*
 
-# Sublime stuff
-*.sublime-project
-*.sublime-workspace
+# Vim Swap Files
+*.sw?
+
+# Windows Files
+Desktop.ini
+desktop.ini*
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
+
+# Linux
+.Trashes
